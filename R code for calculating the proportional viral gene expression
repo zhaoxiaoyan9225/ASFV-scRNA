@@ -1,0 +1,12 @@
+### calculating the proportional viral gene expression ###
+c <- viral_gene %>% filter(virus_type!="control") %>% 
+  dplyr::select(6:189,orig.ident,virus_type) %>% 
+  melt(id=c("orig.ident","virus_type")) %>% 
+  group_by(orig.ident) %>% 
+  summarise(sum_cell=sum(value),gene=variable,value=value,virus_type,.groups = "drop") %>% 
+  group_by(orig.ident,gene) %>% 
+  summarise(sum_gene=sum(value),orig.ident,sum_cell,virus_type,.groups = "drop") %>% 
+  mutate(pop=sum_gene/sum_cell) %>% 
+  unique()
+c %>% group_by(orig.ident) %>% summarise(sum(pop))
+virus_gene_pop <- c
