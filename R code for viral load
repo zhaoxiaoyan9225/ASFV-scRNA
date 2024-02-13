@@ -1,0 +1,14 @@
+meta<- combined_mac@meta.data
+meta %>% filter(virus_type!="control") %>% 
+  dplyr::select(6:189)->virus_gene
+head(virus_gene,3)
+virus_gene[is.na(virus_gene)] <- 0
+head(virus_gene,3)
+virus_gene <- t(virus_gene)
+head(virus_gene,3)
+virus_gene <- NormalizeData(virus_gene,normalization.method = "RC")### normolized viral genes expression by CPM
+virus_gene<- as.matrix(virus_gene)
+virus_gene <- t(virus_gene)
+virus_gene <- log2(virus_gene+1)
+virus_gene <- as.data.frame(virus_gene)
+virus_gene$nor_viral_load<- apply(virus_gene[,1:184], 1, sum) ### calulate viral load
